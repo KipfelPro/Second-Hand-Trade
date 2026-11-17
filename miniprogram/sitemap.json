@@ -1,0 +1,4 @@
+{
+  "desc": "校园闲置演示小程序",
+  "rules": [{"action":"disallow","page":"*"}]
+}

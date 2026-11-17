@@ -1,0 +1,57 @@
+{
+  "description": "同窗集 · 天津大学校园二手交易原生小程序",
+  "projectname": "同窗集",
+  "appid": "wxc4b57eab86ff28f8",
+  "compileType": "miniprogram",
+  "miniprogramRoot": "./",
+  "packOptions": {
+    "ignore": [
+      {
+        "value": "README.md",
+        "type": "file"
+      },
+      {
+        "value": ".env.local",
+        "type": "file"
+      },
+      {
+        "value": "cloudbaserc.json",
+        "type": "file"
+      },
+      {
+        "value": "project.private.config.json",
+        "type": "file"
+      },
+      {
+        "value": "同窗集-微信小程序源码.zip",
+        "type": "file"
+      }
+    ],
+    "include": []
+  },
+  "setting": {
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "urlCheck": true,
+    "compileWorklet": false,
+    "minified": false,
+    "uglifyFileName": false,
+    "uploadWithSourceMap": true,
+    "packNpmManually": false,
+    "packNpmRelationList": [],
+    "minifyWXSS": true,
+    "minifyWXML": true,
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "useCompilerPlugins": false,
+    "condition": false,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    }
+  },
+  "simulatorPluginLibVersion": {},
+  "editorSetting": {}
+}

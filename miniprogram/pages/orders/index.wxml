@@ -1,0 +1,33 @@
+<view class="page orders-page">
+  <view class="order-tabs" aria-role="tablist">
+    <view wx:for="{{statuses}}" wx:key="id" class="order-tab {{selected === item.id ? 'active' : ''}}" data-status="{{item.id}}" bindtap="select" hover-class="tap" aria-role="tab" aria-selected="{{selected === item.id}}">{{item.label}}</view>
+  </view>
+  <view wx:if="{{!verified}}" class="card orders-empty">
+    <view class="empty-title">认证后查看订单</view>
+    <button class="primary empty-button" hover-class="tap" bindtap="authenticate">去认证</button>
+  </view>
+  <view wx:elif="{{orders.length}}" class="order-stack">
+    <view wx:for="{{orders}}" wx:key="id" class="card order-card" data-id="{{item.id}}" bindtap="openOrder" hover-class="tap" aria-role="button">
+      <view class="order-card-top">
+        <text class="card-date">{{item.date}}</text>
+        <text class="order-state {{item.status}}">{{item.label}}</text>
+      </view>
+      <view class="order-card-main">
+        <image wx:if="{{item.product.images.length}}" src="{{item.product.images[0]}}" class="order-image" mode="aspectFill" />
+        <view class="order-product">
+          <view class="product-name">{{item.product.title}}</view>
+          <view class="product-pickup">{{item.pickup && item.pickup.status === 'confirmed' ? item.pickup.location : item.product.location}}</view>
+          <view wx:if="{{item.pickup && item.pickup.status === 'confirmed'}}" class="product-pickup">{{item.pickup.date}} {{item.pickup.time}}</view>
+        </view>
+        <view class="order-price">¥{{item.product.price}}</view>
+        <t-icon name="chevron-right" size="{{27}}" color="muted" />
+      </view>
+    </view>
+  </view>
+  <view wx:else class="card orders-empty">
+    <view class="empty-icon"><t-icon name="receipt" size="42" color="#a3264f" /></view>
+    <view class="empty-title">暂无{{selected === 'all' ? '' : '相关'}}订单</view>
+    <button class="secondary empty-button" hover-class="tap" bindtap="browse">逛闲置</button>
+  </view>
+</view>
+<pet-fab />

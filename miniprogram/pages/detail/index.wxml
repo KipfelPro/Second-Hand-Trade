@@ -1,0 +1,62 @@
+<view wx:if="{{product}}" class="detail-page {{reducedMotion ? 'motion-off' : ''}}">
+  <view class="gallery" wx:if="{{product.images.length}}">
+    <swiper circular="{{product.images.length > 1}}" duration="{{reducedMotion ? 0 : 260}}" class="gallery-swiper" bindchange="slideChange">
+      <swiper-item wx:for="{{product.images}}" wx:key="*this">
+        <image class="gallery-image" src="{{item}}" mode="aspectFill" data-src="{{item}}" bindtap="preview" />
+      </swiper-item>
+    </swiper>
+    <view class="gallery-count">{{slide + 1}} / {{product.images.length}}</view>
+  </view>
+  <view class="detail-content">
+    <view class="card item-summary detail-entry">
+      <view class="item-title">{{product.title}}</view>
+      <view class="summary-top">
+        <view class="item-price"><text class="price-symbol">¥</text>{{product.price}}</view>
+        <button class="favorite {{favorited ? 'is-favorite' : ''}}" hover-class="tap" bindtap="toggleFavorite" aria-label="{{favorited ? '取消收藏' : '收藏商品'}}"><t-icon name="{{favorited ? 'heart-filled' : 'heart'}}" size="{{28}}" color="{{favorited ? 'pink' : 'ink'}}" /><text>{{favorited ? '已收藏' : '收藏'}}</text></button>
+      </view>
+      <view class="item-tags">
+        <text wx:if="{{product.condition}}" class="tag">{{product.condition}}</text>
+        <text wx:if="{{categoryName}}" class="tag neutral-tag">{{categoryName}}</text>
+        <text wx:if="{{product.bargain}}" class="tag neutral-tag">可议价</text>
+        <text wx:if="{{product.status !== 'active'}}" class="tag neutral-tag">{{product.status === 'sold' ? '已售出' : '已下架'}}</text>
+      </view>
+    </view>
+
+    <view class="card seller-card detail-entry" wx:if="{{seller}}">
+      <image class="seller-avatar" wx:if="{{seller.avatar}}" src="{{seller.avatar}}" mode="aspectFill" />
+      <view class="seller-avatar avatar-fallback" wx:else>{{seller.nickname ? seller.nickname[0] : '同'}}</view>
+      <view class="seller-meta">
+        <view class="seller-name">{{seller.nickname || seller.name}}</view>
+        <view class="seller-college">{{seller.college}}</view>
+        <view class="seller-trust"><verify-badge wx:if="{{seller.verified}}" /></view>
+      </view>
+      <view class="seller-credit">
+        <text class="credit-score">{{seller.credit}}</text>
+        <text class="credit-label">信用 · {{creditLabel}}</text>
+      </view>
+    </view>
+
+    <view class="card detail-section">
+      <view class="section-head"><text class="section-index">01</text><view class="section-title">宝贝描述</view></view>
+      <text class="description" user-select>{{product.description || '暂无描述'}}</text>
+    </view>
+
+    <view class="card detail-section">
+      <view class="section-head"><text class="section-index">02</text><view class="section-title">校园自提</view></view>
+      <view class="pickup-line"><text class="pickup-label">地点</text><text user-select>{{bookedPickup ? bookedPickup.location : product.location}}</text></view>
+      <view class="pickup-line" wx:if="{{bookedPickup}}"><text class="pickup-label">已约</text><text>{{bookedPickup.date}} {{bookedPickup.time}}</text></view>
+      <view class="pickup-line" wx:elif="{{product.time}}"><text class="pickup-label">可交接</text><text>{{product.time}}</text></view>
+      <button wx:if="{{!own && product.status === 'active'}}" class="pickup-chat" hover-class="tap" data-pickup="{{true}}" bindtap="chat"><t-icon name="clock" size="{{30}}" color="ink" /><text>{{showPickup ? '查看预约' : '预约自提'}}</text><t-icon name="chevron-right" size="{{24}}" color="muted" /></button>
+    </view>
+  </view>
+
+  <view class="detail-actions">
+    <button wx:if="{{own && product.status !== 'sold'}}" class="secondary" hover-class="tap" bindtap="edit">编辑商品</button>
+    <button wx:elif="{{!own}}" class="secondary" hover-class="tap" bindtap="chat">私聊卖家</button>
+    <button wx:if="{{!own}}" class="primary purchase" hover-class="tap" bindtap="checkout" disabled="{{product.status !== 'active' && !boughtOrderId}}">{{boughtOrderId ? '查看订单' : product.status === 'active' ? '立即下单' : product.status === 'sold' ? '已售出' : '已下架'}}</button>
+    <view wx:elif="{{product.status === 'sold'}}" class="muted">已售出</view>
+  </view>
+</view>
+<view wx:else class="page"><view class="empty">这件闲置暂时无法查看</view></view>
+<pet-fab wx:if="{{product}}" product-id="{{product.id}}" bottom="{{250}}" />
+<pet-fab wx:else />

@@ -1,0 +1,93 @@
+<view class="page order-page {{showActions ? 'has-order-actions' : ''}} {{reducedMotion ? 'motion-off' : ''}}" wx:if="{{order}}">
+  <view class="state-hero {{order.status}}">
+    <view class="state-mark {{paymentConfirmed ? 'payment-mark' : 'completion-mark'}}" wx:if="{{celebrating}}"><t-icon name="check" size="{{42}}" color="white" /></view>
+    <view class="state-mark" wx:else><t-icon name="{{order.status === 'aftersale' ? 'shield' : 'box'}}" size="{{42}}" color="white" /></view>
+    <view class="state-title">{{status.title}}</view>
+    <view class="payment-confirmed" wx:if="{{paymentConfirmed}}">模拟支付成功</view>
+    <view class="state-text" wx:if="{{status.text}}">{{status.text}}</view>
+  </view>
+
+  <view class="card timeline-card">
+    <view class="section-title">交易进度</view>
+    <view class="timeline {{timelineComplete ? 'timeline-complete' : ''}}" aria-role="list">
+      <view wx:for="{{steps}}" wx:key="label" class="timeline-step {{timelineComplete || currentStep > index ? 'reached' : index === currentStep ? 'current' : ''}} {{timelineComplete && index === currentStep ? 'final-node' : ''}}" aria-role="listitem" aria-label="{{item.label}}，{{timelineComplete || currentStep > index ? '已完成' : index === currentStep ? '进行中' : '未开始'}}">
+        <view wx:if="{{index > 0}}" class="timeline-track" aria-hidden="true" />
+        <view class="timeline-node"><t-icon name="{{timelineComplete || currentStep > index ? 'check' : item.icon}}" color="{{index === currentStep ? 'white' : timelineComplete || currentStep > index ? (timelineComplete ? 'green' : 'pink') : 'muted'}}" size="{{32}}" /></view>
+        <text class="timeline-label">{{item.label}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="card order-info">
+    <view class="pickup-order-heading"><view class="section-title">校园自提</view><text wx:if="{{pickup || (order.status === 'pending' && !handoffAt)}}" class="tag {{pickup && !pickupExpired ? 'pickup-booked' : ''}}">{{pickupExpired ? '预约已过期' : pickup ? '已确认' : '待预约'}}</text></view>
+    <view class="order-item" bindtap="openProduct" hover-class="tap" aria-role="button">
+      <image wx:if="{{order.product.images.length}}" src="{{order.product.images[0]}}" class="order-image" mode="aspectFill" />
+      <view class="order-product"><view class="item-title">{{order.product.title}}</view><view class="muted">{{order.product.condition}}</view></view>
+      <t-icon name="chevron-right" size="29" color="#8a7580" />
+    </view>
+    <view class="order-row"><text class="muted">卖家</text><text>{{sellerName}}</text></view>
+    <view class="order-row"><text class="muted">地点</text><text user-select>{{pickup ? pickup.location : order.product.location}}</text></view>
+    <view class="order-row" wx:if="{{pickup}}"><text class="muted">{{pickupExpired ? '原预约' : '已约'}}</text><text>{{pickup.date}} {{pickup.time}}</text></view>
+    <view class="order-row" wx:elif="{{order.product.time && order.status === 'pending' && !handoffAt}}"><text class="muted">可交接</text><text>{{order.product.time}}</text></view>
+    <view class="order-row"><text class="muted">成交金额</text><text class="row-amount">¥{{order.product.price}}</text></view>
+    <view class="order-row"><text class="muted">货款状态</text><text>{{status.funds}}</text></view>
+    <button wx:if="{{order.status === 'pending' && !handoffAt}}" class="contact-seller" hover-class="tap" bindtap="contactSeller">
+      <t-icon name="message" size="{{30}}" /><text>{{pickup ? '联系卖家改约' : '预约自提'}}</text><t-icon name="chevron-right" size="{{25}}" />
+    </button>
+    <button wx:if="{{order.status === 'pending' && !handoffAt}}" class="contact-seller handoff-action" hover-class="tap" bindtap="recordHandoff">
+      <t-icon name="box" size="{{30}}" /><text>模拟面交</text><t-icon name="chevron-right" size="{{25}}" />
+    </button>
+  </view>
+
+  <view class="card order-info">
+    <view class="section-title">订单记录</view>
+    <view class="order-row"><text class="muted">订单编号</text><text selectable>{{order.id}}</text></view>
+    <view class="order-row"><text class="muted">下单时间</text><text>{{orderedAt}}</text></view>
+    <view wx:if="{{handoffAt}}" class="order-row"><text class="muted">面交验货</text><text>{{handoffAt}}</text></view>
+    <view wx:if="{{completedAt}}" class="order-row"><text class="muted">完成时间</text><text>{{completedAt}}</text></view>
+    <view wx:if="{{appliedAt}}" class="order-row"><text class="muted">申请售后</text><text>{{appliedAt}}</text></view>
+    <view wx:if="{{reviewedAt}}" class="order-row"><text class="muted">审核通过</text><text>{{reviewedAt}}</text></view>
+  </view>
+
+  <view wx:if="{{order.afterSale}}" class="card order-info">
+    <view class="section-title">售后申请</view>
+    <text class="detail-copy" selectable>{{order.afterSale.reason}}</text>
+  </view>
+  <view wx:if="{{order.rating}}" class="card order-info">
+    <view class="section-title">我的评价</view>
+    <view class="rating-result" aria-label="{{order.rating.rating}} 星"><text wx:for="{{stars}}" wx:key="*this" class="{{order.rating.rating >= item ? 'filled' : ''}}">★</text></view>
+    <text wx:if="{{order.rating.comment}}" class="detail-copy" selectable>{{order.rating.comment}}</text>
+  </view>
+
+  <view wx:if="{{showActions}}" class="order-actions">
+    <button wx:if="{{order.status === 'pending'}}" class="secondary" hover-class="tap" bindtap="startAfterSale">申请售后</button>
+    <button wx:if="{{order.status === 'pending'}}" class="primary" hover-class="tap" bindtap="confirmReceipt">确认收货</button>
+    <button wx:if="{{order.status === 'completed'}}" class="primary" hover-class="tap" bindtap="startRating">评价交易</button>
+    <button wx:if="{{order.status === 'aftersale'}}" class="secondary" hover-class="tap" bindtap="simulateReview">模拟平台审核</button>
+  </view>
+</view>
+<view wx:else class="page">
+  <view class="empty">{{verified ? '暂时找不到该订单' : '认证后可查看你的订单'}}</view>
+  <button wx:if="{{!verified}}" class="primary" hover-class="tap" bindtap="authenticate">去认证</button>
+</view>
+<pet-fab wx:if="{{!dialog}}" bottom="{{order && showActions ? 200 : 142}}" />
+
+<view wx:if="{{dialog}}" class="sheet-overlay {{reducedMotion ? 'motion-off' : ''}}" bindtap="closeDialog" catchtouchmove="preventClose">
+  <view class="sheet" catchtap="preventClose" aria-role="dialog">
+    <view class="close-sheet" hover-class="tap" bindtap="closeDialog" aria-role="button" aria-label="关闭订单弹窗"><t-icon name="close" size="{{36}}" color="#6e5864" /></view>
+    <view class="sheet-heading">
+      <view class="section-title">{{dialog === 'aftersale' ? '申请售后' : '评价交易'}}</view>
+    </view>
+    <block wx:if="{{dialog === 'aftersale'}}">
+      <textarea class="sheet-input" value="{{reason}}" maxlength="240" fixed="{{true}}" placeholder="描述问题" bindinput="updateReason" />
+      <button class="primary" hover-class="tap" bindtap="sendAfterSale" disabled="{{!reason}}">提交申请</button>
+    </block>
+    <block wx:else>
+      <view class="rating-stars">
+        <button wx:for="{{stars}}" wx:key="*this" class="rating-star {{rating >= item ? 'filled' : ''}}" hover-class="tap" data-value="{{item}}" bindtap="selectStar" aria-label="{{item}} 星">★</button>
+      </view>
+      <textarea class="sheet-input" value="{{comment}}" maxlength="240" fixed="{{true}}" placeholder="评价内容（选填）" bindinput="updateComment" />
+      <button class="primary" hover-class="tap" bindtap="sendRating" disabled="{{!rating}}">提交评价</button>
+    </block>
+  </view>
+</view>

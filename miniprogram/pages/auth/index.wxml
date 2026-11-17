@@ -1,0 +1,51 @@
+<import src="./campus.wxml" />
+<view class="auth-page {{reducedMotion ? 'motion-off' : ''}}">
+  <view class="auth-hero campus-hero">
+    <template is="campus-photos" data="{{places: places, placeIndex: placeIndex, reducedMotion: reducedMotion, campusPaused: campusPaused}}" />
+    <view class="campus-top" style="{{navStyle}}">
+      <button wx:if="{{!first}}" aria-label="返回" hover-class="pressed" bindtap="back"><t-icon name="arrow-left" size="{{32}}" color="white"/></button>
+      <text>同窗集</text>
+    </view>
+    <view class="campus-content">
+      <view class="campus-title">校园身份认证</view>
+      <template is="campus-navigation" data="{{places: places, placeIndex: placeIndex, reducedMotion: reducedMotion, campusPaused: campusPaused}}" />
+    </view>
+  </view>
+
+  <view class="auth-card {{profile ? 'identity-card' : ''}}">
+    <view class="card-intro">
+      <view class="auth-icon"><t-icon name="{{profile ? 'check' : 'shield'}}" size="{{37}}" color="pink"/></view>
+      <view class="intro-copy">
+        <view class="card-title">{{profile ? '核对学籍信息' : '使用天大校园身份'}}</view>
+        <view wx:if="{{!profile}}" class="card-subtitle">认证后可发布、私聊和下单</view>
+      </view>
+    </view>
+    <view wx:if="{{profile}}" class="identity">
+      <view class="identity-line"><text>学号</text><text>{{profile.studentNo}}</text></view>
+      <view class="identity-line"><text>姓名</text><text>{{profile.name}}</text></view>
+      <view class="identity-line"><text>学院</text><text>{{profile.college}}</text></view>
+      <view class="identity-line"><text>年级</text><text>{{profile.grade}}</text></view>
+    </view>
+    <button wx:if="{{profile}}" class="primary auth-primary" hover-class="pressed" loading="{{submitting}}" disabled="{{submitting}}" bindtap="confirm">确认身份</button>
+    <button wx:else class="primary auth-primary" hover-class="pressed" bindtap="enterPortal">去认证<t-icon name="arrow-right" size="{{31}}" color="white"/></button>
+    <button wx:if="{{profile}}" class="auth-skip" hover-class="pressed" bindtap="enterPortal">重新核验</button>
+    <button wx:else class="auth-skip" hover-class="pressed" bindtap="browse">先逛逛</button>
+    <button class="proof" hover-class="pressed" bindtap="openSafety">
+      <t-icon name="lock" size="{{27}}" color="green"/>
+      <text>认证与隐私</text>
+      <t-icon name="chevron-right" size="{{22}}" color="muted"/>
+    </button>
+  </view>
+  <view class="safety-backdrop" wx:if="{{safetyOpen}}" bindtap="closeSafety">
+    <view class="safety-sheet" catchtap="keepSafetyOpen" aria-role="dialog" aria-label="认证与隐私">
+      <view class="safety-close" aria-role="button" aria-label="关闭认证与隐私" hover-class="pressed" bindtap="closeSafety"><t-icon name="close" size="{{36}}" color="ink"/></view>
+      <view class="safety-handle" />
+      <view class="safety-heading">
+        <view class="sheet-title">认证与隐私</view>
+      </view>
+      <view class="safety-step"><view class="step-copy"><text>本机核验</text><text>请使用页面提供的账号。凭据不会上传或保存。</text></view></view>
+      <view class="safety-step"><view class="step-copy"><text>身份资料</text><text>确认后保存身份资料，学号已部分隐藏。</text></view></view>
+    </view>
+  </view>
+</view>
+<pet-fab wx:if="{{!safetyOpen}}" bottom="{{210}}" motion-paused="{{reducedMotion}}" />

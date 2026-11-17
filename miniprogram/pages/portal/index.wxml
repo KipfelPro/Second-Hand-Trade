@@ -1,0 +1,33 @@
+<import src="../auth/campus.wxml" />
+<view class="portal-page {{reducedMotion ? 'motion-off' : ''}}">
+  <view class="portal-hero campus-hero">
+    <template is="campus-photos" data="{{places: places, placeIndex: placeIndex, reducedMotion: reducedMotion, campusPaused: campusPaused}}" />
+    <view class="campus-top" style="{{navStyle}}">
+      <button aria-label="返回" hover-class="pressed" bindtap="back"><t-icon name="arrow-left" size="{{32}}" color="white"/></button>
+      <text>同窗集</text>
+    </view>
+    <view class="campus-content">
+      <view class="campus-title">天津大学融合门户</view>
+      <template is="campus-navigation" data="{{places: places, placeIndex: placeIndex, reducedMotion: reducedMotion, campusPaused: campusPaused}}" />
+    </view>
+  </view>
+
+  <view class="credentials">
+    <view class="demo-note"><t-icon name="info" size="{{30}}" color="pink"/><text>请用演示账号，勿输入真实账号或密码。</text></view>
+    <button class="demo-fill" hover-class="pressed" bindtap="fill" disabled="{{busy}}"><t-icon name="spark" size="{{31}}"/>自动填入</button>
+    <label class="field">
+      <text>账号</text>
+      <view class="field-control"><t-icon name="user" size="{{30}}" color="muted"/><input value="{{account}}" maxlength="32" placeholder="输入账号" placeholder-class="portal-placeholder" bindinput="account" bindkeyboardheightchange="keyboardChanged" disabled="{{busy}}" aria-label="账号"/></view>
+    </label>
+    <view class="field">
+      <text>密码</text>
+      <view class="field-control">
+        <t-icon name="lock" size="{{30}}" color="muted"/>
+        <input password="{{!showPassword}}" value="{{password}}" maxlength="36" placeholder="输入密码" placeholder-class="portal-placeholder" bindinput="password" bindkeyboardheightchange="keyboardChanged" confirm-type="done" bindconfirm="submit" disabled="{{busy}}" aria-label="密码"/>
+        <button class="show-password" hover-class="pressed" bindtap="togglePassword" disabled="{{busy}}">{{showPassword ? '隐藏' : '显示'}}</button>
+      </view>
+    </view>
+    <view wx:if="{{error}}" class="error" aria-live="polite"><t-icon name="alert" size="{{24}}"/>{{error}}</view>
+    <button class="primary portal-submit" hover-class="pressed" loading="{{busy}}" disabled="{{busy}}" bindtap="submit">核验身份<t-icon wx:if="{{!busy}}" name="arrow-right" size="{{30}}" color="white"/></button>
+  </view>
+</view>

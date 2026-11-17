@@ -1,0 +1,34 @@
+<view class="page listings-page">
+  <view class="listing-tabs" aria-role="tablist">
+    <view wx:for="{{filters}}" wx:key="id" class="listing-tab {{selected === item.id ? 'active' : ''}}" data-status="{{item.id}}" bindtap="select" hover-class="tap" aria-role="tab" aria-selected="{{selected === item.id}}">{{item.label}}</view>
+  </view>
+  <view wx:if="{{!verified}}" class="card listings-empty">
+    <view class="empty-title">认证后管理闲置</view>
+    <button class="primary empty-button" hover-class="tap" bindtap="authenticate">去认证</button>
+  </view>
+  <view wx:elif="{{products.length}}" class="listing-stack">
+    <view wx:for="{{products}}" wx:key="id" class="card listing-card">
+      <view class="listing-row" data-id="{{item.id}}" bindtap="viewProduct" hover-class="tap" aria-role="button">
+        <image wx:if="{{item.images.length}}" class="listing-image" src="{{item.images[0]}}" mode="aspectFill" />
+        <view class="listing-main">
+          <view class="listing-title">{{item.title}}</view>
+          <view class="listing-date">{{item.condition}} · {{item.date}}</view>
+          <view class="listing-price">¥{{item.price}}</view>
+        </view>
+        <text class="listing-status {{item.status}}">{{item.label}}</text>
+      </view>
+      <view wx:if="{{item.status !== 'sold'}}" class="listing-actions">
+        <button class="mini-button" hover-class="tap" data-id="{{item.id}}" bindtap="editProduct">编辑</button>
+        <button class="mini-button action-button" hover-class="tap" data-id="{{item.id}}" data-status="{{item.status === 'active' ? 'offline' : 'active'}}" bindtap="changeStatus">{{item.status === 'active' ? '下架' : '重新上架'}}</button>
+      </view>
+    </view>
+  </view>
+  <view wx:else class="card listings-empty">
+    <view class="empty-icon"><t-icon name="box" size="42" color="#a3264f" /></view>
+    <view class="empty-title">{{selected === 'all' ? '还没发布闲置' : '此状态暂无闲置'}}</view>
+  </view>
+  <view wx:if="{{verified}}" class="listings-bar">
+    <button class="primary" hover-class="tap" bindtap="publish"><t-icon name="plus" size="30" color="#FFFFFF" /> 发布闲置</button>
+  </view>
+</view>
+<pet-fab bottom="{{verified ? 200 : 142}}" />

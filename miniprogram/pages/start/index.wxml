@@ -1,0 +1,15 @@
+<import src="../auth/campus.wxml" />
+<view class="launch campus-hero {{reducedMotion ? 'motion-off' : ''}}">
+  <template is="campus-photos" data="{{places: places, placeIndex: placeIndex, reducedMotion: reducedMotion}}" />
+  <view class="campus-top" style="{{navStyle}}">天津大学</view>
+  <view class="launch-content">
+    <view class="launch-mascot"><image class="mascot" mode="aspectFit" src="/images/pet-happy.png" /></view>
+    <view class="campus-title">同窗集</view>
+    <view class="campus-subtitle">天大专属闲置流转平台</view>
+  </view>
+  <view class="launch-footer footer-safe">
+    <view class="progress" aria-label="正在启动"><view class="progress-fill" /></view>
+    <button class="launch-enter" bindtap="enter" hover-class="pressed">进入<t-icon name="arrow-right" size="{{32}}" color="white" /></button>
+  </view>
+</view>
+<pet-fab bottom="{{208}}" />

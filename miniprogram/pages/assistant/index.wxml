@@ -1,0 +1,70 @@
+<view class="assistant {{reducedMotion ? 'assistant-motion-off' : ''}}" style="bottom: {{keyboardHeight}}px;">
+  <view class="assistant-header">
+    <view class="assistant-brand">
+      <view class="header-identity"><text class="assistant-name">棠小助</text></view>
+      <view class="pet-action-entry" wx:if="{{!keyboardHeight}}"><pet-fab inline="{{true}}" in-conversation="{{true}}" /></view>
+    </view>
+    <view class="assistant-modes" aria-label="对话主题" wx:if="{{!keyboardHeight}}">
+      <view class="mode-track" aria-hidden="true"><view class="mode-indicator {{mode === 'publish' ? 'mode-middle' : mode === 'ask' ? 'mode-last' : ''}}"/></view>
+      <button wx:for="{{modes}}" wx:key="key" class="mode-button {{mode === item.key ? 'mode-active' : ''}}" data-mode="{{item.key}}" bindtap="changeMode" aria-pressed="{{mode === item.key}}" hover-class="assistant-pressed">{{item.title}}</button>
+    </view>
+  </view>
+
+  <scroll-view class="chat-scroll" scroll-y enhanced show-scrollbar="{{false}}" scroll-with-animation="{{!reducedMotion && !keyboardHeight}}" scroll-into-view="{{anchor}}">
+    <view class="chat-content">
+      <view class="intro" wx:if="{{!messages.length}}">
+        <block wx:for="{{modes}}" wx:key="key">
+          <view class="intro-copy" wx:if="{{mode === item.key}}">
+            <view class="intro-title">{{mode === 'publish' ? '想上架什么闲置？' : mode === 'ask' ? '有什么想问的？' : '想找什么闲置？'}}</view>
+            <text>{{introduction}}</text>
+          </view>
+        </block>
+        <view class="starter-row">
+          <button wx:for="{{prompts}}" wx:key="label" class="starter" data-text="{{item.text}}" bindtap="sendPrompt" hover-class="assistant-pressed"><t-icon name="{{item.icon}}" size="{{28}}"/><text>{{item.label}}</text><t-icon name="chevron-right" size="{{24}}" color="muted"/></button>
+        </view>
+      </view>
+      <view wx:for="{{messages}}" wx:key="id" class="chat-row {{item.role === 'user' ? 'chat-user' : 'chat-agent'}} {{item.id === animatedMessageId ? 'message-arrival' : ''}}">
+        <image wx:if="{{item.role === 'assistant'}}" class="face" src="{{item.mood === 'happy' ? '/images/pet-happy.png' : '/images/pet.png'}}" mode="aspectFit" />
+        <view class="message-content">
+          <view class="message-bubble">
+            <image wx:if="{{item.image}}" class="chat-image" src="{{item.image}}" mode="widthFix" data-url="{{item.image}}" bindtap="previewImage" hover-class="assistant-pressed" />
+            <text wx:if="{{item.text}}" class="message-text" user-select>{{item.text}}</text>
+            <button wx:if="{{item.copy}}" class="copy-link" data-text="{{item.text}}" bindtap="copyReply" hover-class="assistant-pressed">复制文字</button>
+          </view>
+          <view wx:if="{{item.products.length}}" class="result-products">
+            <product-card wx:for="{{item.products}}" wx:for-item="product" wx:key="id" product="{{product}}" layout="list" />
+          </view>
+          <view wx:if="{{item.actions && item.actions.length}}" class="message-actions">
+            <button wx:for="{{item.actions}}" wx:for-item="entry" wx:key="label" class="action" data-url="{{entry.url}}" bindtap="openAction" hover-class="assistant-pressed"><text>{{entry.label}}</text><t-icon name="arrow-right" size="{{24}}" /></button>
+          </view>
+        </view>
+      </view>
+      <view wx:if="{{thinking}}" class="chat-row chat-agent thinking-row">
+        <image class="face" src="/images/pet.png" mode="aspectFit" />
+        <view class="message-bubble thinking" aria-label="棠小助正在回复"><view></view><view></view><view></view></view>
+      </view>
+      <view id="conversation-end" class="conversation-end"></view>
+    </view>
+  </scroll-view>
+
+  <view class="composer {{keyboardHeight ? 'composer-keyboard' : ''}}">
+    <scroll-view wx:if="{{messages.length && !keyboardHeight && !attachment && !recording}}" scroll-x enhanced show-scrollbar="{{false}}" class="quick-prompts">
+      <view class="prompt-row">
+        <button wx:for="{{prompts}}" wx:key="label" class="prompt-chip" data-text="{{item.text}}" bindtap="sendPrompt" hover-class="assistant-pressed" disabled="{{thinking}}">{{item.label}}</button>
+      </view>
+    </scroll-view>
+    <view wx:if="{{attachment}}" class="attachment">
+      <image src="{{attachment}}" mode="aspectFill" data-url="{{attachment}}" bindtap="previewImage" hover-class="assistant-pressed" />
+      <button class="remove-image" bindtap="removeAttachment" hover-class="assistant-pressed" aria-label="移除图片"><t-icon name="close" size="{{24}}" color="#8c8286" /></button>
+    </view>
+    <view wx:if="{{recording}}" class="recording"><view></view>录音中</view>
+    <view class="compose-row">
+      <view class="compose-tool {{thinking || recording ? 'compose-tool-disabled' : ''}}" bindtap="chooseImage" hover-class="assistant-pressed" aria-role="button" aria-label="添加图片" aria-disabled="{{thinking || recording}}"><t-icon name="image" size="{{34}}" color="#88546e" /></view>
+      <view class="entry-field">
+        <input class="entry" type="text" value="{{draft}}" placeholder="输入消息" placeholder-class="entry-placeholder" maxlength="300" confirm-type="send" confirm-hold="{{true}}" adjust-position="{{false}}" bindfocus="focusInput" bindblur="blurInput" bindkeyboardheightchange="onKeyboard" bindinput="input" bindconfirm="sendCurrent" aria-label="输入消息" />
+      </view>
+      <view class="compose-tool {{recording ? 'compose-recording' : ''}} {{thinking ? 'compose-tool-disabled' : ''}}" bindtap="chooseVoice" hover-class="assistant-pressed" aria-role="button" aria-label="{{recording ? '结束录音' : '语音输入'}}" aria-disabled="{{thinking}}"><t-icon name="mic" size="{{34}}" color="{{recording ? '#FFFFFF' : '#88546e'}}" /></view>
+      <view class="send {{(!hasText && !attachment) || thinking || recording ? 'send-inactive' : ''}}" bindtap="sendCurrent" hover-class="assistant-pressed" aria-role="button" aria-disabled="{{(!hasText && !attachment) || thinking || recording}}">发送</view>
+    </view>
+  </view>
+</view>

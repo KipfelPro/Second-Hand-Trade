@@ -1,0 +1,124 @@
+<template name="aiMark">
+  <text class="ai-mark" wx:if="{{active}}">AI 初稿</text>
+</template>
+
+<view class="page publish-page">
+  <view class="card publish-section access-card" wx:if="{{needsAuth}}">
+    <view class="section-title">认证后继续编辑</view>
+    <button class="secondary" hover-class="touch" bindtap="authenticate">去认证</button>
+  </view>
+  <view class="empty" wx:elif="{{missing}}">这件商品或草稿无法编辑</view>
+  <block wx:else>
+    <view class="publish-hero">
+      <view class="hero-copy">
+        <view class="hero-title">{{pageTitle}}</view>
+      </view>
+      <image class="publish-pet" src="/images/pet-happy.png" mode="aspectFit" />
+    </view>
+
+    <view class="card publish-section">
+      <view class="heading-row">
+        <view class="section-title">商品照片</view>
+        <text class="muted count">{{form.images.length}} / 9</text>
+      </view>
+      <view class="publish-photos">
+        <view class="publish-tile" wx:for="{{form.images}}" wx:key="*this">
+          <image class="publish-photo" src="{{item}}" mode="aspectFill" bindtap="previewImage" data-path="{{item}}" data-images="{{form.images}}" />
+          <button class="remove-photo" aria-label="删除照片" hover-class="touch" catchtap="removeImage" data-index="{{index}}">×</button>
+        </view>
+        <button class="publish-tile upload-photo" hover-class="touch" bindtap="addImages" wx:if="{{form.images.length < 9}}" disabled="{{choosingPhotos || busy}}">
+          <t-icon name="camera" size="36" color="#a3264f" />
+          <text>上传照片</text>
+        </button>
+      </view>
+      <view class="sample-row" wx:if="{{!form.images.length && mode === 'new' && sampleOptions.length}}">
+        <text class="muted">试用样图</text>
+        <button wx:for="{{sampleOptions}}" wx:key="path" class="sample-choice" hover-class="touch" bindtap="useSample" data-path="{{item.path}}">{{item.label}}</button>
+      </view>
+      <button wx:if="{{form.images.length}}" class="secondary recognize-button" hover-class="touch" bindtap="recognize" disabled="{{choosingPhotos || busy}}" loading="{{busy}}">
+        <t-icon name="spark" size="28" color="#a3264f" />
+        <text>{{busy ? '正在生成' : '生成初稿'}}</text>
+      </button>
+      <view wx:if="{{hint}}" class="publish-hint">{{hint}}</view>
+    </view>
+
+    <view wx:if="{{mode === 'new'}}" class="card publish-section batch-option">
+      <view>
+        <view class="label">批量上架</view>
+      </view>
+      <switch checked="{{batch}}" color="#a3264f" aria-label="批量上架" bindchange="toggleBatch" />
+    </view>
+
+    <view class="card publish-section edit-section">
+      <view class="section-title">商品信息</view>
+
+      <view class="entry">
+        <view class="entry-label"><text class="label">商品名称</text><template is="aiMark" data="{{active: aiFields.title}}" /></view>
+        <input value="{{form.title}}" data-field="title" bindinput="inputField" placeholder="填写商品名称" maxlength="42" />
+      </view>
+
+      <view class="form-grid">
+        <view class="entry">
+          <view class="entry-label"><text class="label">分类</text><template is="aiMark" data="{{active: aiFields.category}}" /></view>
+          <picker range="{{categoryOptions}}" range-key="name" value="{{categoryIndex}}" bindchange="chooseCategory">
+            <view class="picker-value {{categoryName ? '' : 'muted'}}"><text>{{categoryName || '选择分类'}}</text><t-icon name="chevron-right" size="24" /></view>
+          </picker>
+        </view>
+        <view class="entry">
+          <view class="entry-label"><text class="label">成色</text><template is="aiMark" data="{{active: aiFields.condition}}" /></view>
+          <picker range="{{conditionOptions}}" value="{{conditionIndex}}" bindchange="chooseCondition">
+            <view class="picker-value {{form.condition ? '' : 'muted'}}"><text>{{form.condition || '选择成色'}}</text><t-icon name="chevron-right" size="24" /></view>
+          </picker>
+        </view>
+      </view>
+
+      <view class="form-grid" wx:if="{{form.category === 'books'}}">
+        <view class="entry">
+          <view class="entry-label"><text class="label">课程</text><template is="aiMark" data="{{active: aiFields.course}}" /></view>
+          <input value="{{form.course}}" data-field="course" bindinput="inputField" placeholder="如 高等数学" maxlength="24" />
+        </view>
+        <view class="entry">
+          <view class="entry-label"><text class="label">适用年级</text><template is="aiMark" data="{{active: aiFields.grade}}" /></view>
+          <input value="{{form.grade}}" data-field="grade" bindinput="inputField" placeholder="如 大一" maxlength="12" />
+        </view>
+      </view>
+
+      <view class="entry">
+        <view class="entry-label"><text class="label">商品价格</text><template is="aiMark" data="{{active: aiFields.price}}" /></view>
+        <view class="price-entry"><text>¥</text><input type="digit" value="{{form.price}}" data-field="price" bindinput="inputField" bindblur="priceCheck" placeholder="0.00" maxlength="9" /></view>
+      </view>
+
+      <view class="entry">
+        <view class="entry-label description-label">
+          <view><text class="label">详情描述</text><template is="aiMark" data="{{active: aiFields.description}}" /></view>
+          <button class="voice-action" hover-class="touch" bindtap="appendVoice"><t-icon name="mic" size="26" color="#a3264f" /><text>{{recording ? '结束录音' : '语音补充'}}</text></button>
+        </view>
+        <textarea value="{{form.description}}" data-field="description" bindinput="inputField" placeholder="说明使用情况、瑕疵或随附物品" maxlength="600" auto-height />
+        <view class="template-note" wx:if="{{suggestion}}">{{suggestion}}</view>
+      </view>
+
+      <view class="entry">
+        <view class="entry-label"><text class="label">自提地点</text><template is="aiMark" data="{{active: aiFields.location}}" /></view>
+        <picker range="{{pickupSites}}" value="{{pickupIndex}}" bindchange="choosePickup">
+          <view class="location-select"><text>{{form.location || '选择' + campusName + '的自提点'}}</text><t-icon name="chevron-right" size="{{26}}"/></view>
+        </picker>
+      </view>
+
+      <view class="entry">
+        <view class="entry-label"><text class="label">交易时间</text><template is="aiMark" data="{{active: aiFields.time}}" /></view>
+        <input value="{{form.time}}" data-field="time" bindinput="inputField" placeholder="如 工作日 18:00–21:00" maxlength="40" />
+      </view>
+
+      <view class="entry toggle-entry">
+        <view class="entry-label"><text class="label">接受小幅议价</text><template is="aiMark" data="{{active: aiFields.bargain}}" /></view>
+        <switch checked="{{form.bargain}}" bindchange="toggleBargain" color="#a3264f" aria-label="接受小幅议价" />
+      </view>
+    </view>
+
+    <view class="publish-bottom footer-safe">
+      <text class="muted" wx:if="{{mode === 'draft'}}">草稿自动保存</text>
+      <button class="primary" hover-class="touch" bindtap="submit" disabled="{{choosingPhotos || busy || submitting || recording}}">{{mode === 'draft' ? '完成编辑' : (mode === 'edit' ? '保存修改' : '发布闲置')}}</button>
+    </view>
+  </block>
+</view>
+<pet-fab bottom="{{228}}" />

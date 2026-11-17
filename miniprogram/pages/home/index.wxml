@@ -1,0 +1,87 @@
+<view class="landing">
+  <view class="stream-heading">
+    <view>
+      <view class="campus"><view class="campus-dot"></view>天津大学</view>
+      <view class="wordmark">校园集市</view>
+    </view>
+    <view class="icon-button message-link" bindtap="openMessages" hover-class="home-pressed" aria-label="消息">
+      <t-icon name="bell" size="38" color="#1f1a1c" />
+      <view wx:if="{{hasUnread}}" class="message-dot"></view>
+    </view>
+  </view>
+
+  <view class="find-panel">
+    <view class="campus-switch {{reducedMotion ? 'home-motion-off' : ''}}" aria-label="选择校区">
+      <view class="campus-track" aria-hidden="true">
+        <view class="campus-indicator campus-indicator-{{campusIndex}}"/>
+      </view>
+      <button wx:for="{{campusOptions}}" wx:key="id" class="campus-option {{campusId === item.id ? 'campus-option-active' : ''}}" data-id="{{item.id}}" bindtap="selectCampus" hover-class="home-pressed" aria-label="{{item.name}}" aria-pressed="{{campusId === item.id}}">
+        <text>{{item.name}}</text>
+      </button>
+    </view>
+
+    <view class="search-box">
+      <t-icon name="search" size="30" color="#9A9095" />
+      <input class="search-input" type="text" value="{{query}}" maxlength="80" confirm-type="search" placeholder="{{campusId === 'all' ? '试试「大一上高数教材」' : '搜索' + campusTitle + '闲置'}}" placeholder-class="search-placeholder" bindinput="onQueryInput" bindconfirm="search" />
+      <button class="search-button" bindtap="search" hover-class="home-pressed">搜索</button>
+    </view>
+  </view>
+
+  <view class="hero {{reducedMotion ? 'home-motion-off' : ''}}">
+    <swiper class="hero-swiper" current="{{heroIndex}}" autoplay="{{visible && !reducedMotion}}"
+      circular interval="{{3200}}" duration="{{reducedMotion ? 0 : 230}}" bindchange="updateHero">
+      <swiper-item wx:for="{{heroSlides}}" wx:key="intent">
+        <view class="hero-slide slide-{{item.intent}}">
+          <image class="hero-image" src="{{item.image}}" mode="aspectFill" />
+          <view class="hero-content {{heroIndex === index ? 'hero-content-current' : ''}}">
+            <view class="hero-label"><t-icon name="{{item.icon}}" size="{{22}}" color="#8C2346" />{{item.label}}</view>
+            <view class="hero-title"><view>{{item.title}}</view><view>{{item.subtitle}}</view></view>
+            <view class="hero-button" data-intent="{{item.intent}}" bindtap="openHero" hover-class="home-pressed" aria-role="button">{{item.action}}<t-icon name="arrow-right" size="{{25}}" color="#FFFFFF" /></view>
+          </view>
+        </view>
+      </swiper-item>
+    </swiper>
+    <view class="hero-pages">
+      <view wx:for="{{heroSlides}}" wx:key="intent" class="hero-page {{heroIndex === index ? 'hero-page-active' : ''}}" data-index="{{index}}" bindtap="chooseHero" hover-class="home-pressed" aria-role="button" aria-label="{{item.label}}" aria-pressed="{{heroIndex === index}}"><view/></view>
+    </view>
+  </view>
+
+  <view class="shortcut-card">
+    <view wx:for="{{shortcuts}}" wx:key="id" class="shortcut shortcut-entry-{{item.id}}" data-id="{{item.id}}" bindtap="chooseCategory" hover-class="home-pressed" aria-role="button" aria-label="{{item.name}}">
+      <view class="shortcut-inner">
+        <view class="shortcut-icon shortcut-{{item.id}}"><t-icon name="{{item.icon}}" size="36" color="{{item.id === 'wants' ? 'white' : 'ink'}}" /></view>
+        <text>{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="feed-header">
+    <view>
+      <view class="feed-eyebrow">CAMPUS MARKET</view>
+      <view class="feed-title">校园闲置</view>
+    </view>
+    <view class="feed-all" bindtap="openBrowse" hover-class="home-pressed">查看全部<t-icon name="chevron-right" size="22" color="#7a6f73" /></view>
+  </view>
+  <view class="feed-tools">
+    <view class="filter-row">
+      <view wx:for="{{filters}}" wx:key="label" class="filter-chip {{activeFilter === index ? 'filter-chip-active' : ''}}" data-index="{{index}}" bindtap="chooseFilter" hover-class="home-pressed">{{item.label}}</view>
+    </view>
+    <view class="feed-publish" bindtap="openPublish" hover-class="home-pressed"><text>＋</text>发闲置</view>
+  </view>
+  <view wx:for="{{sections}}" wx:key="id" wx:for-item="market" class="market-section market-{{market.id}}">
+    <view class="market-heading">
+      <view class="market-name"><view></view>{{market.name}}<text>{{market.count}} 件</text></view>
+      <view wx:if="{{campusId === 'all'}}" class="market-browse" data-id="{{market.id}}" bindtap="openCampus" hover-class="home-pressed">查看该校区<t-icon name="arrow-right" size="20" color="#7a6f73" /></view>
+    </view>
+    <view wx:if="{{market.count}}" class="stream">
+      <view class="stream-column" wx:for="{{market.columns}}" wx:for-item="column" wx:key="id">
+        <product-card wx:for="{{column.items}}" wx:key="id" product="{{item.product}}" layout="{{item.layout}}" hide-college="{{true}}" hide-campus="{{true}}" />
+      </view>
+    </view>
+    <view wx:else class="stream-empty card">
+      <view>该校区暂无符合条件的闲置</view>
+    </view>
+  </view>
+
+  <pet-fab hint="{{petHint}}" delay="{{0}}" />
+</view>

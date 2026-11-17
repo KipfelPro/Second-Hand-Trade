@@ -1,0 +1,4 @@
+<view wx:if="{{verified}}" class="badge">
+  <t-icon name="shield" size="{{25}}" color="green" />
+  <text>{{compact ? '天大已认证' : '天大融合门户认证'}}</text>
+</view>

@@ -1,0 +1,17 @@
+<view class="favorites-page">
+  <view wx:if="{{products.length}}" class="favorites-list">
+    <view wx:for="{{products}}" wx:key="id" class="favorite">
+      <product-card product="{{item}}" layout="list" />
+      <view class="favorite-actions">
+        <text wx:if="{{item.status !== 'active'}}" class="muted">暂不可购买</text>
+        <view class="remove" data-id="{{item.id}}" bindtap="remove" hover-class="fav-pressed">取消收藏</view>
+      </view>
+    </view>
+  </view>
+  <view wx:else class="favorites-empty">
+    <view class="favorite-icon"><t-icon name="heart" size="55" color="#a3264f" /></view>
+    <view class="favorite-heading">暂时没有收藏</view>
+    <view class="view-list" bindtap="browse" hover-class="fav-pressed">逛逛闲置</view>
+  </view>
+  <pet-fab />
+</view>

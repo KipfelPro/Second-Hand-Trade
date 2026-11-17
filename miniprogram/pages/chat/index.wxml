@@ -1,0 +1,122 @@
+<view class="chat-shell {{reducedMotion ? 'motion-off' : ''}}" wx:if="{{threadReady}}" style="bottom: {{keyboardHeight}}px;">
+  <view class="peer">
+    <image wx:if="{{peer.avatar}}" src="{{peer.avatar}}" class="peer-avatar" mode="aspectFill" />
+    <view wx:else class="peer-avatar avatar-fallback">{{role === 'seller' ? '买' : '卖'}}</view>
+    <view class="peer-info">
+      <view class="peer-title">
+        <text class="peer-name">{{peer.nickname || peer.name || '校园同窗'}}</text>
+        <text class="peer-role">{{role === 'seller' ? '买家' : '卖家'}}</text>
+      </view>
+      <view wx:if="{{peer}}" class="peer-meta">{{peer.college}} · 信用 {{peer.credit}} 分 <text class="chat-credit">{{creditLabel}}</text></view>
+      <verify-badge wx:if="{{peer.verified}}" />
+    </view>
+    <view class="peer-pet" wx:if="{{!keyboardHeight && !showEmoji && !bookingOpen}}">
+      <pet-fab inline="{{true}}" product-id="{{product.id}}" />
+    </view>
+  </view>
+  <view class="chat-product" wx:if="{{product}}" bindtap="openProduct" hover-class="tap" aria-role="button">
+    <image wx:if="{{product.images.length}}" src="{{product.images[0]}}" class="chat-product-image" mode="aspectFill" />
+    <view class="chat-trade-info">
+      <view class="chat-product-title">{{product.title}}</view>
+      <view class="chat-deal-price">
+        <text class="chat-original-price" wx:if="{{agreedPrice !== null}}">¥{{product.price}}</text>
+        <text class="chat-product-price">¥{{tradePrice}}</text>
+        <text class="chat-viewer-role">{{role === 'seller' ? '我是卖家' : '我是买家'}}</text>
+      </view>
+    </view>
+    <text wx:if="{{tradeState}}" class="chat-product-status chat-status-{{tradeState.tone}}">{{tradeState.label}}</text>
+    <t-icon name="chevron-right" size="29" color="#8a7580" />
+  </view>
+  <scroll-view class="chat-scroll" scroll-y scroll-into-view="{{scrollTo}}">
+    <view class="chat-history">
+      <view wx:if="{{handoffDone}}" class="chat-note">{{role === 'seller' ? '已交付，等待买家确认收货。' : '已交付，验货后可确认收货。'}}</view>
+      <view class="reply-shortcuts" wx:if="{{!keyboardHeight && !showEmoji && canBook && !pickup}}">
+        <button wx:for="{{shortcuts}}" wx:key="label" class="reply-shortcut" data-text="{{item.text}}" bindtap="useShortcut" hover-class="tap">{{item.label}}</button>
+      </view>
+      <view wx:for="{{messages}}" wx:key="id" id="chat-{{item.id}}" class="chat-entry {{item.from === 'me' ? 'mine' : ''}}">
+        <view wx:if="{{item.time}}" class="chat-time">{{item.time}}</view>
+        <view wx:if="{{item.from === 'system'}}" class="chat-event"><text>{{item.text}}</text></view>
+        <view wx:else class="bubble-row">
+          <image wx:if="{{item.from === 'me' ? user.avatar : peer.avatar}}" class="bubble-avatar" src="{{item.from === 'me' ? user.avatar : peer.avatar}}" mode="aspectFill" />
+          <view wx:else class="bubble-avatar avatar-fallback">{{item.from === 'me' ? '我' : '同'}}</view>
+          <text class="chat-bubble" user-select>{{item.text}}</text>
+        </view>
+      </view>
+      <view wx:if="{{pickup && pickupState}}" class="pickup-card pickup-{{pickup.status}} {{pickupExpired ? 'pickup-expired' : ''}}">
+        <view class="pickup-header">
+          <view class="pickup-mark"><t-icon name="{{pickup.status === 'confirmed' ? 'check' : 'location'}}" size="{{32}}" color="{{pickup.status === 'confirmed' ? 'green' : 'pink'}}" /></view>
+          <view class="pickup-heading">
+            <text class="pickup-title">面交预约</text>
+          </view>
+          <text class="pickup-status">{{pickupExpired ? '已过期' : pickupState}}</text>
+        </view>
+        <view class="pickup-facts">
+          <view><t-icon name="location" size="{{26}}" color="muted" /><text user-select>{{pickup.location}}</text></view>
+          <view><t-icon name="clock" size="{{26}}" color="muted" /><text>{{pickup.date}} {{pickup.time}}</text></view>
+        </view>
+        <view wx:if="{{pickup.status === 'counter' && pickup.requested}}" class="pickup-original">原邀请 {{pickup.requested.date}} {{pickup.requested.time}}</view>
+        <view wx:if="{{effectivePickup}}" class="pickup-original">原预约仍有效 · {{effectivePickup.date}} {{effectivePickup.time}} · {{effectivePickup.location}}</view>
+        <view wx:if="{{canBook}}" class="pickup-actions">
+          <block wx:if="{{canRespond}}">
+            <button class="subtle-action" data-choice="decline" data-id="{{pickup.id}}" bindtap="respondBooking" hover-class="tap">拒绝</button>
+            <button class="soft-action" bindtap="openBooking" hover-class="tap">改时间</button>
+            <button wx:if="{{!pickupExpired}}" class="emphasis-action" data-choice="accept" data-id="{{pickup.id}}" bindtap="respondBooking" hover-class="tap">接受</button>
+          </block>
+          <block wx:elif="{{pickup.status === 'confirmed' || pickup.status === 'proposed' || pickup.status === 'counter'}}">
+            <button class="subtle-action" bindtap="cancelBooking" hover-class="tap">取消预约</button>
+            <button class="soft-action" bindtap="openBooking" hover-class="tap">重新约</button>
+          </block>
+          <button wx:else class="soft-action" bindtap="openBooking" hover-class="tap">发起新预约</button>
+        </view>
+      </view>
+      <view id="chat-bottom" class="chat-bottom" />
+    </view>
+  </scroll-view>
+  <view class="composer {{keyboardHeight ? 'keyboard-open' : ''}}">
+    <view wx:if="{{!keyboardHeight && !showEmoji && (canBook || canBuy || (orderId && role === 'buyer') || canHandoff || canSimulateReceipt)}}" class="trade-tools">
+      <button wx:if="{{canBook}}" class="trade-link soft-action" bindtap="openBooking" hover-class="tap"><t-icon name="clock" size="{{28}}" />{{pickup && pickup.status === 'confirmed' ? '更改预约' : '预约自提'}}</button>
+      <button wx:if="{{role === 'buyer' && (canBuy || orderId)}}" class="trade-link emphasis-action" bindtap="openDeal" hover-class="tap">{{dealLabel}}<t-icon name="arrow-right" size="{{24}}" color="white" /></button>
+      <button wx:if="{{canHandoff}}" class="trade-link emphasis-action" bindtap="handoff" hover-class="tap">记录交付</button>
+      <button wx:if="{{canSimulateReceipt}}" class="trade-link soft-action" bindtap="simulateReceipt" hover-class="tap">模拟买家收货</button>
+    </view>
+    <view class="composer-row">
+      <input class="chat-input" value="{{input}}" placeholder="输入消息" maxlength="500" confirm-type="send" adjust-position="{{false}}" bindfocus="focusInput" bindblur="blurInput" bindkeyboardheightchange="resizeForKeyboard" bindinput="updateInput" bindconfirm="send" />
+      <button class="chat-tool {{showEmoji ? 'tool-active' : ''}}" hover-class="tap" bindtap="toggleEmoji" aria-label="{{showEmoji ? '收起表情' : '打开表情'}}"><t-icon name="smile" size="{{38}}" /></button>
+      <button class="chat-send" hover-class="tap" bindtap="send" disabled="{{!hasText}}">发送</button>
+    </view>
+    <view class="emoji-panel" wx:if="{{showEmoji}}">
+      <button wx:for="{{emojis}}" wx:key="*this" class="emoji-key" hover-class="tap" data-emoji="{{item}}" bindtap="addEmoji">{{item}}</button>
+    </view>
+  </view>
+</view>
+<view wx:else class="page">
+  <view class="empty">{{user.verified ? '这个会话暂时无法查看' : '认证后即可开启校园私聊'}}</view>
+  <button class="primary" wx:if="{{!user.verified}}" hover-class="tap" bindtap="authenticate">去认证</button>
+</view>
+<view wx:if="{{bookingOpen}}" class="booking-overlay {{reducedMotion ? 'motion-off' : ''}}" bindtap="closeBooking" catchtouchmove="stopBookingTap">
+  <view class="booking-sheet" catchtap="stopBookingTap" aria-role="dialog" aria-label="面交预约">
+    <view class="booking-close" bindtap="closeBooking" hover-class="tap" aria-role="button" aria-label="关闭预约表单"><t-icon name="close" size="{{36}}" color="muted" /></view>
+    <view class="booking-header">
+      <view>
+        <view class="booking-title">预约自提</view>
+        <view class="booking-subtitle">{{product.campus}} · 公共自提点</view>
+      </view>
+    </view>
+    <view class="booking-pickers">
+      <picker mode="selector" range="{{pickupSites}}" value="{{pickupSiteIndex}}" bindchange="selectLocation">
+        <view class="booking-field">
+          <t-icon name="location" size="{{30}}"/><view><text class="field-label">自提地点</text><text class="field-choice">{{pickupSites[pickupSiteIndex]}}</text></view><t-icon name="chevron-right" size="{{25}}" color="muted"/>
+        </view>
+      </picker>
+      <view class="booking-when">
+        <picker mode="date" value="{{bookingDate}}" start="{{earliestDate}}" bindchange="selectDate">
+          <view class="booking-field"><view><text class="field-label">日期</text><text class="field-choice">{{bookingDate}}</text></view><t-icon name="chevron-right" size="{{25}}" color="muted"/></view>
+        </picker>
+        <picker mode="time" value="{{bookingTime}}" bindchange="selectTime">
+          <view class="booking-field"><view><text class="field-label">时间</text><text class="field-choice">{{bookingTime}}</text></view><t-icon name="chevron-right" size="{{25}}" color="muted"/></view>
+        </picker>
+      </view>
+    </view>
+    <button class="primary booking-submit" bindtap="submitBooking" hover-class="tap">发送预约</button>
+  </view>
+</view>

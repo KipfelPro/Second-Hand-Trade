@@ -1,0 +1,2 @@
+:host { display: inline-flex; max-width: 100%; }
+.badge { display: inline-flex; align-items: center; gap: 6rpx; color: #3f6652; background: #edf3ef; padding: 4rpx 14rpx 4rpx 10rpx; border: 0; font-size: 21rpx; line-height: 1.5; letter-spacing: 1rpx; border-radius: 999rpx; white-space: nowrap; }

@@ -1,0 +1,62 @@
+<view class="page messages-page">
+  <view class="message-tabs" aria-role="tablist">
+    <view wx:for="{{sections}}" wx:key="id" class="message-tab {{selected === item.id ? 'active' : ''}}" data-section="{{item.id}}" bindtap="select" hover-class="tap" aria-role="tab" aria-selected="{{selected === item.id}}">
+      <text>{{item.label}}</text><view class="tab-count" wx:if="{{unread[item.id]}}">{{unread[item.id] > 99 ? '99+' : unread[item.id]}}</view>
+    </view>
+  </view>
+  <view wx:if="{{verified && selected === 'chat'}}" class="conversation-roles" aria-role="tablist" aria-label="交易身份">
+    <view wx:for="{{roles}}" wx:key="id" class="conversation-role {{role === item.id ? 'role-active' : ''}}" data-role="{{item.id}}" bindtap="chooseRole" aria-role="tab" aria-selected="{{role === item.id}}">
+      <text>{{item.label}}</text>
+      <text wx:if="{{roleUnread[item.id]}}" class="tab-count">{{roleUnread[item.id] > 99 ? '99+' : roleUnread[item.id]}}</text>
+    </view>
+  </view>
+  <view wx:if="{{!verified && selected !== 'system'}}" class="card messages-empty">
+    <view class="empty-icon"><t-icon name="shield" size="40" color="ink" /></view>
+    <view class="empty-title">认证后查看消息</view>
+    <button class="primary auth-action" hover-class="tap" bindtap="authenticate">去认证</button>
+  </view>
+  <view wx:elif="{{entries.length && selected === 'chat'}}" class="conversation-list">
+    <view wx:for="{{entries}}" wx:key="id" class="card conversation" data-id="{{item.id}}" bindtap="openItem" hover-class="tap" aria-role="button">
+      <view class="conversation-header">
+        <image class="peer-avatar" wx:if="{{item.avatar}}" src="{{item.avatar}}" mode="aspectFill" />
+        <view wx:else class="peer-avatar message-mark">{{item.initial}}</view>
+        <text class="conversation-name">{{item.title}}</text>
+        <text class="peer-label">{{item.peerLabel}}</text>
+        <text class="message-date">{{item.time}}</text>
+      </view>
+      <view class="conversation-product">
+        <image wx:if="{{item.productCover}}" class="conversation-cover" src="{{item.productCover}}" mode="aspectFill" />
+        <view wx:else class="conversation-cover message-mark"><t-icon name="box" size="36" /></view>
+        <view class="conversation-product-main">
+          <view class="conversation-title">{{item.productTitle}}</view>
+          <view class="conversation-meta">
+            <text wx:if="{{item.price !== null}}" class="conversation-price">¥{{item.price}}</text>
+            <text class="conversation-status state-{{item.tone}}">{{item.status}}</text>
+          </view>
+        </view>
+        <view class="row-unread-dot" wx:if="{{item.unread}}" />
+        <t-icon wx:else name="chevron-right" size="22" color="muted" />
+      </view>
+      <view class="message-row-bottom"><text class="message-preview">{{item.text}}</text><view wx:if="{{item.unread}}" class="row-unread is-count">{{item.unread > 99 ? '99+' : item.unread}}</view></view>
+    </view>
+  </view>
+  <view wx:elif="{{entries.length}}" class="card messages-list">
+    <view wx:for="{{entries}}" wx:key="id" class="message-row" data-id="{{item.id}}" bindtap="openItem" hover-class="tap" aria-role="button">
+      <image class="message-avatar" wx:if="{{item.avatar}}" src="{{item.avatar}}" mode="aspectFill" />
+      <view wx:else class="message-avatar message-mark">
+        <text wx:if="{{item.initial}}">{{item.initial}}</text>
+        <t-icon wx:else name="{{selected === 'order' ? 'receipt' : 'info'}}" size="36" color="ink" />
+      </view>
+      <view class="message-row-main">
+        <view class="message-row-top"><text class="message-title">{{item.title}}</text><text class="message-date">{{item.time}}</text></view>
+        <view class="message-row-bottom"><text class="message-preview">{{item.text}}</text><view wx:if="{{item.unread}}" class="row-unread" /></view>
+      </view>
+    </view>
+  </view>
+  <view wx:else class="card messages-empty">
+    <view class="empty-icon"><t-icon name="message" size="40" color="ink" /></view>
+    <view class="empty-title">{{selected === 'chat' ? (role === 'seller' ? '暂无买家留言' : '暂无购买会话') : '暂无新通知'}}</view>
+    <view wx:if="{{selected === 'chat'}}" class="muted">{{role === 'seller' ? '买家来咨询时，会话会出现在这里。' : '在商品详情页可联系卖家。'}}</view>
+  </view>
+</view>
+<pet-fab />

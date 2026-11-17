@@ -1,0 +1,38 @@
+<view class="page profile">
+  <view class="profile-hero">
+    <view class="hero-glow" aria-hidden="true" />
+    <image class="pet" src="/images/pet-happy.png" mode="aspectFit"/>
+    <view class="hero-eyebrow">TONGCHUANG · 天津大学</view>
+    <view class="profile-row">
+      <image wx:if="{{user}}" class="avatar" src="{{user.avatar}}" mode="aspectFill"/>
+      <view wx:else class="avatar guest"><t-icon name="user" size="{{48}}" color="white"/></view>
+      <view class="profile-info">
+        <view class="nickname">{{user ? user.nickname : '校园访客'}}</view>
+        <view wx:if="{{user}}" class="college">{{user.college}} · {{user.grade}}</view>
+        <verify-badge wx:if="{{user.verified}}"/>
+        <button wx:else class="verify-cta" bindtap="verify">去认证<t-icon name="chevron-right" size="{{22}}" color="white"/></button>
+      </view>
+    </view>
+    <view wx:if="{{user}}" class="credit-row">
+      <view class="credit-main">
+        <text class="credit-caption">校园信用</text>
+        <view class="credit-value"><text class="credit">{{user.credit}}</text><text class="credit-level">{{level}}</text></view>
+      </view>
+      <view class="credit-stats">
+        <view class="stat"><text class="stat-num">{{counts[0]}}</text><text class="stat-name">在售</text></view>
+        <view class="stat"><text class="stat-num">{{counts[1]}}</text><text class="stat-name">订单</text></view>
+        <view class="stat"><text class="stat-num">{{counts[3]}}</text><text class="stat-name">收藏</text></view>
+      </view>
+    </view>
+  </view>
+  <view class="card menu">
+    <button class="menu-row" wx:for="{{menu}}" wx:key="title" data-index="{{index}}" bindtap="open" hover-class="tap">
+      <view class="menu-icon"><t-icon name="{{item.icon}}" size="{{32}}" color="ink"/></view>
+      <text class="menu-name">{{item.title}}</text>
+      <text wx:if="{{user && index < 4}}" class="menu-count">{{counts[index]}}</text>
+      <t-icon name="chevron-right" color="muted" size="{{24}}"/>
+    </button>
+  </view>
+  <button class="primary publish-button" bindtap="publish"><t-icon name="plus" size="{{30}}" color="white"/>发布闲置</button>
+</view>
+<pet-fab/>

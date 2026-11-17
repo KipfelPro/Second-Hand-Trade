@@ -1,0 +1,31 @@
+@import './campus.wxss';
+
+.auth-page { min-height: 100vh; padding-bottom: 60rpx; background: #f7f4f0; }
+.auth-hero { min-height: 515rpx; }
+.auth-card { position: relative; margin: -28rpx 24rpx 0; padding: 28rpx; border-radius: 24rpx; border: 1rpx solid #ece6e3; background: #ffffff; box-shadow: 0 12rpx 38rpx rgba(89,38,65,.1); animation: auth-enter 210ms ease-out both; }
+.card-intro { display: flex; align-items: center; gap: 16rpx; }
+.intro-copy { flex: 1; min-width: 0; }
+.auth-icon { display: grid; place-items: center; width: 72rpx; height: 72rpx; flex-shrink: 0; border-radius: 20rpx; border: 1rpx solid #f3dce8; background: #f7ecef; }
+.card-title, .sheet-title { font-weight: 750; color: #1f1a1c; line-height: 1.26; font-size: 41rpx; }
+.card-subtitle { margin-top: 5rpx; font-size: 32rpx; color: #665660; line-height: 1.45; }
+.proof { display: flex; align-items: center; justify-content: center; gap: 8rpx; width: 100%; min-height: 60rpx; margin-top: 8rpx; padding: 8rpx 15rpx; border-top: 1rpx solid #ece6e3; color: #47705c; font-size: 26rpx; }
+.auth-primary { width: 100%; margin-top: 26rpx; min-height: 88rpx; font-size: 34rpx; }
+.auth-skip { width: 100%; min-height: 74rpx; margin-top: 4rpx; padding: 9rpx; color: #8b4565; font-size: 33rpx; }
+.identity { margin: 16rpx 0 0; padding: 5rpx 16rpx; border: 1rpx solid #ece6e3; border-radius: 14rpx; background: #fdf9fb; }
+.identity-line { display: flex; justify-content: space-between; gap: 14rpx; padding: 13rpx 0; border-bottom: 1rpx solid #eedfe7; font-size: 33rpx; }
+.identity-line:last-child { border: 0; }
+.identity-line text:first-child { color: #74646d; flex-shrink: 0; }
+.identity-line text:last-child { font-weight: 650; text-align: right; }
+.safety-backdrop { position: fixed; inset: 0; z-index: 80; display: flex; flex-direction: column; justify-content: flex-end; background: rgba(24,14,23,.6); animation: auth-fade 140ms ease-out both; }
+.safety-sheet { position: relative; overflow-y: auto; max-height: 88vh; padding: 16rpx 30rpx calc(28rpx + env(safe-area-inset-bottom)); border-radius: 26rpx 26rpx 0 0; background: #ffffff; box-shadow: 0 -12rpx 62rpx rgba(57,28,43,.15); animation: auth-sheet 200ms cubic-bezier(.19,.79,.28,1) both; }
+.safety-handle { width: 57rpx; height: 6rpx; border-radius: 6rpx; margin: 0 auto 22rpx; background: #e7d8e1; }
+.safety-heading { display: flex; align-items: center; min-height: 64rpx; padding-right: calc(44px + 20rpx); }
+.safety-close { position: absolute; top: 12rpx; right: 24rpx; z-index: 1; display: flex; align-items: center; justify-content: center; width: 86rpx; min-width: 44px; height: 86rpx; min-height: 44px; margin: 0; padding: 0; border-radius: 18rpx; background: #f9eef5; }
+.safety-step { padding: 22rpx 0; border-bottom: 1rpx solid #f0e6eb; }
+.step-copy { display: grid; gap: 7rpx; color: #51404a; font-size: 32rpx; line-height: 1.55; }
+.step-copy text:first-child { color: #392932; font-weight: 700; }
+.motion-off .auth-card, .motion-off .safety-backdrop, .motion-off .safety-sheet { animation: none; }
+@keyframes auth-enter { from { opacity: 0; transform: translateY(12rpx); } to { opacity: 1; transform: none; } }
+@keyframes auth-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes auth-sheet { from { opacity: .65; transform: translateY(28rpx); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .auth-card, .safety-backdrop, .safety-sheet { animation: none; } }

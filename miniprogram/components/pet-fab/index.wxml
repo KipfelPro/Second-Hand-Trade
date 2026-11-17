@@ -1,0 +1,42 @@
+<view wx:if="{{expanded || closing}}" class="pet-backdrop {{closing ? 'pet-closing' : ''}} {{reducedMotion ? 'pet-motion-off' : ''}}" style="{{motionStyle}}" bindtap="close" />
+<view wx:if="{{expanded || closing}}" class="pet-panel {{closing ? 'pet-closing' : ''}} {{reducedMotion ? 'pet-motion-off' : ''}}" style="{{panelStyle + motionStyle}}" aria-role="dialog" aria-modal="{{expanded}}" aria-hidden="{{closing}}" aria-label="棠小助互动面板">
+  <view class="pet-close" bindtap="close" aria-role="button" aria-label="关闭棠小助面板" hover-class="pet-press"><t-icon name="close" size="{{36}}" color="muted" /></view>
+  <view class="pet-panel-head">
+    <view class="pet-portrait {{mood ? 'mood-' + mood : ''}}"><image src="/images/pet-happy.png" mode="aspectFit" /></view>
+    <view class="pet-identity"><view class="pet-name">棠小助</view><text class="pet-caption" aria-live="polite">{{caption}}</text></view>
+  </view>
+  <view class="pet-panel-body">
+    <view class="pet-care">
+      <button bindtap="feed" hover-class="pet-press" aria-label="{{'喂花蜜，当前活力 ' + energy}}"><t-icon name="spark" size="{{27}}" /><text>喂花蜜</text></button>
+      <button bindtap="pat" hover-class="pet-press" aria-label="{{'摸摸头，当前亲密度 ' + affection}}"><t-icon name="heart" size="{{27}}" /><text>摸摸头</text></button>
+    </view>
+    <block wx:if="{{!inConversation}}">
+      <view class="pet-shortcuts">
+        <button class="pet-action" data-mode="find" bindtap="shortcut" hover-class="pet-press"><t-icon name="search" size="{{28}}"/><text>找闲置</text></button>
+        <button class="pet-action" data-mode="publish" bindtap="shortcut" hover-class="pet-press"><t-icon name="camera" size="{{28}}"/><text>发闲置</text></button>
+        <button class="pet-action" data-mode="ask" bindtap="shortcut" hover-class="pet-press"><t-icon name="message" size="{{28}}"/><text>问问题</text></button>
+      </view>
+      <button class="pet-open" data-mode="chat" bindtap="shortcut" hover-class="pet-press"><text>展开对话</text><t-icon name="arrow-right" size="{{26}}" color="white"/></button>
+    </block>
+  </view>
+</view>
+<view wx:elif="{{showingHint && (hint || mood === 'pat') && !inline}}" class="pet-hint {{reducedMotion ? 'pet-motion-off' : ''}}" style="{{hintStyle}}" hover-class="pet-press" bindtap="toggle">{{mood === 'pat' ? caption : hint}}</view>
+
+<view class="pet-dock {{inline ? 'pet-inline' : ''}} {{dragging ? 'pet-dragging' : ''}} {{reducedMotion ? 'pet-motion-off' : ''}} {{!active ? 'pet-inactive' : ''}} {{active && !inline && !dragging && !expanded && !closing && !mood && !reducedMotion ? 'pet-stunts' : ''}}"
+  style="{{inline ? '' : x === null ? dockStyle : 'left: ' + x + 'px; top: ' + y + 'px;'}}">
+  <view class="pet-trigger {{expanded ? 'pet-active' : ''}}" aria-role="button" aria-label="棠小助，轻点展开，长按摸头"
+    bindtap="toggle" bindlongpress="longPat" bindtouchstart="touchStart" catchtouchmove="touchMove" bindtouchend="touchEnd" bindtouchcancel="touchEnd" hover-class="pet-press">
+    <view class="pet-shadow" aria-hidden="true" />
+    <view class="pet-body {{mood ? 'mood-' + mood : ''}}">
+      <view class="pet-face">
+        <image mode="aspectFit" src="{{expanded || mood ? '/images/pet-happy.png' : '/images/pet.png'}}"/>
+        <view wx:if="{{!expanded && !mood}}" class="pet-blink" aria-hidden="true"><view /><view /></view>
+      </view>
+      <block wx:if="{{!inline}}">
+        <image class="pet-side pet-side-right" mode="aspectFit" src="/images/pet-side.png" aria-hidden="true" />
+        <image class="pet-side pet-side-left" mode="aspectFit" src="/images/pet-side.png" aria-hidden="true" />
+      </block>
+      <view wx:if="{{mood === 'feed' || mood === 'pat'}}" class="pet-reaction {{mood === 'feed' ? 'reaction-feed' : ''}}" aria-hidden="true"><text>{{mood === 'feed' ? '✦' : '♡'}}</text><text>✧</text><text>✦</text></view>
+    </view>
+  </view>
+</view>

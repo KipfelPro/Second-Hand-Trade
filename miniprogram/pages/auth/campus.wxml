@@ -1,0 +1,16 @@
+<template name="campus-photos">
+  <view class="campus-photos {{reducedMotion ? 'motion-off' : ''}} {{campusPaused ? 'campus-paused' : ''}}" aria-hidden="true">
+    <image wx:for="{{places}}" wx:key="photo" class="campus-photo {{index === placeIndex ? 'campus-current' : ''}}" src="{{item.photo}}" mode="aspectFill" />
+    <view class="campus-scrim" />
+  </view>
+</template>
+
+<template name="campus-navigation">
+  <view class="campus-navigation" aria-label="校园风景">
+    <view class="campus-caption" wx:if="{{places[placeIndex]}}"><t-icon name="location" color="white" size="{{26}}"/><text>{{places[placeIndex].name}}<text class="caption-separator"> / </text>{{places[placeIndex].campus}}</text></view>
+    <view class="campus-pagination">
+      <button wx:for="{{places}}" wx:key="photo" class="campus-dot {{index === placeIndex ? 'dot-current' : ''}}" hover-class="pressed" aria-label="{{'显示' + item.name}}" aria-pressed="{{index === placeIndex}}" data-index="{{index}}" bindtap="selectCampus"><view /></button>
+      <button wx:if="{{!reducedMotion}}" class="motion-button" hover-class="pressed" bindtap="toggleMotion" aria-label="{{campusPaused ? '播放背景' : '暂停背景'}}" aria-pressed="{{campusPaused}}"><view class="{{campusPaused ? 'motion-play' : 'motion-pause'}}" /></button>
+    </view>
+  </view>
+</template>

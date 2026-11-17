@@ -1,0 +1,65 @@
+<view class="page batch-page">
+  <view class="batch-hero">
+    <view class="hero-copy">
+      <view class="hero-title">批量上架</view>
+      <view class="hero-note">每件闲置上传一张照片</view>
+    </view>
+    <image src="/images/pet-happy.png" class="batch-pet" mode="aspectFit" />
+  </view>
+
+  <view class="card batch-card access-card" wx:if="{{!verified}}">
+    <view class="section-title">认证后批量发布</view>
+    <button class="secondary" hover-class="touch" bindtap="authenticate">去认证</button>
+  </view>
+
+  <block wx:else>
+  <view class="card batch-card">
+    <view class="batch-heading"><view class="section-title">商品照片</view><text class="muted">{{drafts.length}} / 18</text></view>
+    <button class="upload-area" hover-class="touch" bindtap="upload" loading="{{busy}}" disabled="{{busy || choosingPhotos || submitting}}"><t-icon name="image" size="38" color="#a3264f" /><text>选照片</text><text class="muted">每次最多 9 张</text></button>
+    <button class="sample-action" wx:if="{{sampleCount}}" hover-class="touch" bindtap="samples" disabled="{{busy || choosingPhotos || submitting}}">试用 {{sampleCount}} 张样图</button>
+    <view class="batch-hint" wx:if="{{hint}}">{{hint}}</view>
+  </view>
+
+  <view class="card batch-card">
+    <view class="section-title">统一设置</view>
+    <view class="batch-field">
+      <text>成色</text>
+      <picker range="{{conditionOptions}}" value="{{conditionIndex}}" bindchange="chooseCondition"><view class="select-setting"><text class="{{settings.condition ? '' : 'muted'}}">{{settings.condition || '选择成色'}}</text><t-icon name="chevron-right" size="24" /></view></picker>
+    </view>
+    <view class="batch-field">
+      <text>价格区间</text>
+      <view class="price-range">
+        <input type="digit" placeholder="最低价" value="{{settings.low}}" data-field="low" bindinput="changeSetting" maxlength="9" />
+        <text>–</text>
+        <input type="digit" placeholder="最高价" value="{{settings.high}}" data-field="high" bindinput="changeSetting" maxlength="9" />
+      </view>
+    </view>
+    <view class="batch-field">
+      <text>自提地点</text>
+      <picker range="{{pickupSites}}" value="{{pickupIndex}}" bindchange="choosePickup">
+        <view class="select-setting"><text class="{{settings.location ? '' : 'muted'}}">{{settings.location || '保留各草稿自提点'}}</text><t-icon name="chevron-right" size="{{24}}"/></view>
+      </picker>
+    </view>
+    <button class="secondary apply" hover-class="touch" bindtap="applySettings" disabled="{{busy || choosingPhotos || submitting || !drafts.length}}">应用到全部草稿</button>
+  </view>
+
+  <view class="card batch-card">
+    <view class="batch-heading"><view class="section-title">商品草稿</view><text class="muted">{{drafts.length}} 件</text></view>
+    <view class="empty" wx:if="{{!drafts.length}}">还没有草稿</view>
+    <view class="draft" wx:for="{{drafts}}" wx:key="draftId">
+      <image class="draft-photo" src="{{item.images[0]}}" mode="aspectFill" />
+      <view class="draft-text" hover-class="touch" bindtap="editDraft" data-id="{{item.draftId}}">
+        <view class="draft-title">{{item.title || '待填写商品名称'}}</view>
+        <view class="draft-meta"><text>¥{{item.price === '' ? '—' : item.price}}</text><text class="muted">{{item.condition || '待填写成色'}}</text></view>
+      </view>
+      <view class="draft-actions">
+        <button class="draft-action" hover-class="touch" bindtap="editDraft" data-id="{{item.draftId}}">编辑</button>
+        <button class="draft-action delete" hover-class="touch" bindtap="removeDraft" data-id="{{item.draftId}}">删除</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="footer-safe batch-submit"><button class="primary" hover-class="touch" bindtap="submit" loading="{{submitting}}" disabled="{{busy || choosingPhotos || submitting || !drafts.length}}">发布全部{{drafts.length ? '（' + drafts.length + ' 件）' : ''}}</button></view>
+  </block>
+</view>
+<pet-fab bottom="{{228}}" />

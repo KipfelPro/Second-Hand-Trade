@@ -1,0 +1,67 @@
+<view class="page wants-page">
+  <view class="card tab-row" aria-label="求购功能">
+    <button class="tab {{mode === 'new' ? 'selected' : ''}}" hover-class="touch" bindtap="switchMode" data-mode="new">发布求购</button>
+    <button class="tab {{mode === 'mine' ? 'selected' : ''}}" hover-class="touch" bindtap="switchMode" data-mode="mine">我的求购</button>
+  </view>
+  <block wx:if="{{mode === 'new'}}">
+    <view class="card want-card ai-draft">
+      <view class="ai-heading">
+        <view class="section-title">棠小助帮你找</view>
+        <image class="want-pet" src="/images/pet-happy.png" mode="aspectFit" />
+      </view>
+      <textarea value="{{query}}" bindinput="enterQuery" maxlength="160" placeholder="例如：高数教材，30 元以内，轻微使用也可" auto-height />
+      <view class="ai-actions">
+        <button class="secondary voice" hover-class="touch" bindtap="useVoice"><t-icon name="mic" size="27" color="#a3264f" />{{recording ? '结束录音' : '语音描述'}}</button>
+        <button class="secondary draft" hover-class="touch" bindtap="createDraft"><t-icon name="spark" size="27" color="#a3264f" />生成求购单</button>
+      </view>
+      <view class="want-hint" wx:if="{{hint}}">{{hint}}</view>
+    </view>
+    <view class="card want-card">
+      <view class="section-title">求购信息</view>
+      <view class="want-field"><text>求购物品</text><input value="{{form.title}}" bindinput="enterField" data-field="title" maxlength="42" placeholder="如 大一上高等数学教材" /></view>
+      <view class="field-grid">
+        <view class="want-field">
+          <text>商品分类</text>
+          <picker range="{{categoryOptions}}" range-key="name" value="{{categoryIndex}}" bindchange="chooseCategory"><view class="want-picker"><text class="{{categoryName ? '' : 'muted'}}">{{categoryName || '选择分类'}}</text><t-icon name="chevron-right" size="24" /></view></picker>
+        </view>
+        <view class="want-field">
+          <text>最低成色</text>
+          <picker range="{{conditionOptions}}" value="{{conditionIndex}}" bindchange="chooseCondition"><view class="want-picker"><text class="{{form.condition ? '' : 'muted'}}">{{form.condition || '选择成色'}}</text><t-icon name="chevron-right" size="24" /></view></picker>
+        </view>
+      </view>
+      <view class="want-field"><text>面交校区</text><text class="muted">{{campusName}}</text></view>
+      <view class="want-field"><text>最高预算（元）</text><input type="digit" value="{{form.budget}}" bindinput="enterField" data-field="budget" maxlength="9" placeholder="如 30" /></view>
+      <view class="want-field"><text>其他要求 <text class="muted optional">选填</text></text><textarea value="{{form.notes}}" bindinput="enterField" data-field="notes" maxlength="200" placeholder="可填写版本、交易校区或其他偏好" auto-height /></view>
+    </view>
+    <view class="footer-safe want-footer">
+      <button class="primary" hover-class="touch" bindtap="submit" disabled="{{recording}}">发布求购</button>
+    </view>
+  </block>
+  <block wx:else>
+    <view class="card want-card empty-state" wx:if="{{!verified}}">
+      <view class="section-title">认证后查看我的求购</view>
+      <button class="secondary" hover-class="touch" bindtap="authenticate">去认证</button>
+    </view>
+    <view class="card want-card empty-state" wx:elif="{{!wants.length}}">
+      <view class="section-title">还没有求购单</view>
+      <button class="secondary" hover-class="touch" bindtap="switchMode" data-mode="new">发布求购</button>
+    </view>
+    <block wx:else>
+      <view class="want-hint list-hint" wx:if="{{hint}}">{{hint}}</view>
+      <view class="card want-card want-record" wx:for="{{wants}}" wx:key="id" wx:for-item="want">
+        <view class="record-heading"><view class="section-title">{{want.title}}</view><text class="budget">预算 ¥{{want.budget}}</text></view>
+        <view class="record-meta"><text class="tag">{{want.categoryName}}</text><text class="tag">{{want.campusName}}</text><text class="tag">{{want.condition}}及以上</text><text class="muted">{{want.date}}</text></view>
+        <view class="record-notes" wx:if="{{want.notes}}">{{want.notes}}</view>
+        <view class="record-actions">
+          <button class="secondary" hover-class="touch" bindtap="toggleMatches" data-id="{{want.id}}">{{expandedId === want.id ? '收起匹配' : '查看匹配（' + want.matches.length + '）'}}</button>
+          <button class="remove-want" hover-class="touch" bindtap="remove" data-id="{{want.id}}">撤回求购</button>
+        </view>
+        <block wx:if="{{expandedId === want.id}}">
+          <view class="empty" wx:if="{{!matches.length}}">暂时没有符合条件的在售闲置</view>
+          <view class="match-list" wx:else><product-card wx:for="{{matches}}" wx:key="id" product="{{item}}" layout="list" /></view>
+        </block>
+      </view>
+    </block>
+  </block>
+</view>
+<pet-fab bottom="{{228}}" />

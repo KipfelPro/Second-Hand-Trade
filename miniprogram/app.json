@@ -1,0 +1,49 @@
+{
+  "pages": [
+    "pages/start/index",
+    "pages/auth/index",
+    "pages/portal/index",
+    "pages/home/index",
+    "pages/browse/index",
+    "pages/publish/index",
+    "pages/batch/index",
+    "pages/wants/index",
+    "pages/detail/index",
+    "pages/checkout/index",
+    "pages/messages/index",
+    "pages/chat/index",
+    "pages/assistant/index",
+    "pages/profile/index",
+    "pages/listings/index",
+    "pages/orders/index",
+    "pages/order/index",
+    "pages/favorites/index",
+    "pages/settings/index"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#F7F4F0",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "同窗集",
+    "backgroundColor": "#F7F4F0"
+  },
+  "tabBar": {
+    "color": "#8C8286",
+    "selectedColor": "#1F1A1C",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {"pagePath":"pages/home/index","text":"首页","iconPath":"images/tab-home.png","selectedIconPath":"images/tab-home-active.png"},
+      {"pagePath":"pages/browse/index","text":"分类","iconPath":"images/tab-browse.png","selectedIconPath":"images/tab-browse-active.png"},
+      {"pagePath":"pages/messages/index","text":"消息","iconPath":"images/tab-messages.png","selectedIconPath":"images/tab-messages-active.png"},
+      {"pagePath":"pages/profile/index","text":"我的","iconPath":"images/tab-profile.png","selectedIconPath":"images/tab-profile-active.png"}
+    ]
+  },
+  "usingComponents": {
+    "pet-fab": "/components/pet-fab/index",
+    "product-card": "/components/product-card/index",
+    "verify-badge": "/components/verify-badge/index",
+    "t-icon": "/components/t-icon/index"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

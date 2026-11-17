@@ -1,0 +1,94 @@
+.chat-shell { position: fixed; top: 0; right: 0; bottom: 0; left: 0; display: flex; flex-direction: column; min-height: 0; overflow: hidden; background: #f8f4f6; }
+.peer { flex: none; display: flex; align-items: center; gap: 18rpx; padding: 16rpx 28rpx; background: #fff; }
+.peer-avatar, .bubble-avatar { display: block; flex-shrink: 0; border-radius: 18rpx; background: #f6e2eb; }
+.peer-avatar { width: 82rpx; height: 82rpx; }
+.avatar-fallback { display: grid; place-items: center; color: var(--pink); font-size: 24rpx; }
+.peer-info { flex: 1; min-width: 0; }
+.peer-pet { flex: none; }
+.peer-title { display: flex; align-items: center; flex-wrap: wrap; gap: 4rpx 12rpx; }
+.peer-name { color: var(--ink); font-size: 35rpx; line-height: 1.25; font-weight: 750; }
+.peer-role { flex: none; padding: 3rpx 10rpx; border-radius: 8rpx; background: #f2e7ed; color: #714457; font-size: 24rpx; font-weight: 650; }
+.peer-meta { margin: 4rpx 0 6rpx; color: #8c8286; font-size: 27rpx; }
+.chat-credit { margin-left: 6rpx; color: #2d725b; }
+.chat-product { flex: none; display: flex; align-items: center; gap: 12rpx; min-height: 98rpx; margin: 14rpx 26rpx 0; padding: 10rpx 14rpx; border: 1rpx solid #f0e4eb; border-radius: 16rpx; background: #fff; }
+.chat-product > t-icon { flex: none; }
+.chat-product-image { width: 66rpx; height: 66rpx; flex-shrink: 0; border-radius: 10rpx; background: #f3e6ed; }
+.chat-trade-info { flex: 1; min-width: 0; }
+.chat-product-title { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; color: var(--ink); font-size: 33rpx; line-height: 1.27; font-weight: 710; overflow-wrap: anywhere; }
+.chat-product-price { color: #a6295c; font-size: 33rpx; font-weight: 750; white-space: nowrap; }
+.chat-deal-price { display: flex; align-items: center; flex-wrap: wrap; gap: 1rpx 9rpx; margin-top: 3rpx; }
+.chat-original-price { color: #8c8286; font-size: 26rpx; text-decoration: line-through; }
+.chat-viewer-role { color: #8c8286; font-size: 25rpx; white-space: nowrap; }
+.chat-product-status { flex: none; padding: 6rpx 10rpx; border-radius: 10rpx; color: #8c8286; font-size: 25rpx; font-weight: 680; white-space: nowrap; }
+.chat-status-live { color: #8d3156; background: #f7ebee; }
+.chat-status-alert { color: #7e4727; background: #f7ecdf; }
+.chat-status-complete { color: #25604a; background: #e4f3e9; }
+.chat-status-quiet { background: #f1e9ed; }
+.chat-scroll { flex: 1 1 0%; width: 100%; height: 0; min-height: 0; }
+.chat-history { display: flex; flex-direction: column; gap: 20rpx; padding: 22rpx 25rpx 18rpx; }
+.chat-note { align-self: center; padding: 8rpx 16rpx; border-radius: 12rpx; background: #f2e9ee; color: #695760; font-size: 24rpx; }
+.reply-shortcuts { display: flex; justify-content: center; flex-wrap: wrap; gap: 10rpx; }
+.reply-shortcut { min-height: 60rpx; margin: 0; padding: 0 20rpx; border: 1rpx solid #e9dce3; border-radius: 30rpx; background: #fff; color: #793f5c; font-size: 25rpx; font-weight: 600; }
+.chat-time { margin-bottom: 12rpx; color: #75656f; font-size: 23rpx; text-align: center; }
+.chat-event { display: flex; justify-content: center; text-align: center; }
+.chat-event text { max-width: 86%; padding: 7rpx 15rpx; border-radius: 12rpx; background: #efe7eb; color: #8c8286; font-size: 27rpx; line-height: 1.45; }
+.bubble-row { display: flex; align-items: flex-start; gap: 11rpx; }
+.mine .bubble-row { flex-direction: row-reverse; }
+.bubble-avatar { width: 58rpx; height: 58rpx; border-radius: 13rpx; }
+.chat-bubble { max-width: 78%; padding: 13rpx 20rpx; border-radius: 6rpx 17rpx 17rpx; background: #fff; color: var(--ink); font-size: 34rpx; line-height: 1.48; white-space: pre-wrap; word-break: break-word; }
+.mine .chat-bubble { border-radius: 17rpx 6rpx 17rpx 17rpx; background: #f3d8e5; }
+.pickup-card { align-self: center; width: 100%; max-width: 650rpx; padding: 20rpx; border: 1rpx solid #eddee5; border-radius: 19rpx; background: #fff; animation: pickup-enter .16s ease-out both; }
+.pickup-header { display: flex; align-items: center; gap: 12rpx; }
+.pickup-mark { display: flex; flex: none; align-items: center; justify-content: center; width: 52rpx; height: 52rpx; border-radius: 14rpx; background: #f7ebee; }
+.pickup-heading { flex: 1; min-width: 0; }
+.pickup-title { display: block; font-size: 34rpx; line-height: 1.2; font-weight: 740; }
+.pickup-status { flex: none; padding: 5rpx 11rpx; border-radius: 9rpx; background: #f7ebee; color: #8f3057; font-size: 24rpx; white-space: nowrap; }
+.pickup-confirmed .pickup-status, .pickup-confirmed .pickup-mark { background: #e7f3e9; color: #35684f; }
+.pickup-declined .pickup-status, .pickup-cancelled .pickup-status, .pickup-expired .pickup-status { background: #f1ebef; color: #725e69; }
+.pickup-facts { display: flex; flex-direction: column; gap: 8rpx; margin-top: 12rpx; padding: 13rpx 12rpx; border-radius: 12rpx; background: #f9f6f3; color: #413039; font-size: 28rpx; }
+.pickup-facts view { display: flex; align-items: center; gap: 8rpx; }
+.pickup-original { margin-top: 9rpx; color: var(--muted); font-size: 24rpx; }
+.pickup-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8rpx; margin-top: 13rpx; }
+.pickup-actions button { min-height: 67rpx; margin: 0; padding: 0 18rpx; border-radius: 11rpx; font-size: 26rpx; font-weight: 680; }
+.subtle-action { color: #756572; }
+.soft-action { background: #f7ebee; color: #902d56; }
+.emphasis-action { background: #a3264f; color: #fff; }
+.chat-bottom { height: 1rpx; margin-top: -16rpx; }
+.composer { flex: none; padding: 14rpx 22rpx calc(14rpx + env(safe-area-inset-bottom)); border-top: 1rpx solid var(--line); background: #fff; }
+.composer.keyboard-open { padding-bottom: 14rpx; }
+.trade-tools { display: flex; gap: 12rpx; margin-bottom: 13rpx; }
+.trade-link { display: flex; flex: 1 1 0; min-width: 0; width: 0; align-items: center; justify-content: center; gap: 8rpx; min-height: 76rpx; margin: 0; padding: 0 8rpx; border-radius: 12rpx; font-size: 30rpx; font-weight: 700; white-space: nowrap; }
+.composer-row { display: flex; align-items: center; gap: 12rpx; }
+.chat-input { flex: 1; display: block; min-width: 0; height: 84rpx; padding: 0 18rpx; border: 1rpx solid #e9dce3; border-radius: 16rpx; background: #f8f4f6; color: var(--ink); font-size: 34rpx; }
+.chat-tool, .emoji-key { display: flex; align-items: center; justify-content: center; margin: 0; padding: 0; }
+.chat-tool { flex: 0 0 68rpx; width: 68rpx; height: 84rpx; border-radius: 15rpx; background: #f8f0f4; }
+.tool-active { background: #f2dae6; }
+.chat-send { flex: 0 0 110rpx; display: flex; align-items: center; justify-content: center; height: 84rpx; margin: 0; padding: 0; border-radius: 15rpx; background: #a3264f; color: #fff; font-size: 34rpx; font-weight: 700; }
+.chat-send[disabled] { opacity: 1; background: #f0e5eb; color: #80546a; }
+.emoji-panel { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8rpx; margin-top: 14rpx; padding-top: 12rpx; border-top: 1rpx solid #f2e8ed; }
+.emoji-key { width: 100%; min-height: 65rpx; border-radius: 12rpx; background: #faf5f7; font-size: 35rpx; }
+.booking-overlay { position: fixed; z-index: 1000; inset: 0; display: flex; align-items: flex-end; background: rgba(37,24,32,.46); }
+.booking-sheet { position: relative; width: 100%; padding: 24rpx 26rpx calc(28rpx + env(safe-area-inset-bottom)); border-radius: 26rpx 26rpx 0 0; background: #fff; animation: booking-enter .16s ease-out both; }
+.booking-header { min-height: 83rpx; margin-bottom: 18rpx; padding-right: calc(44px + 20rpx); }
+.booking-title { font-size: 40rpx; font-weight: 750; }
+.booking-subtitle { color: var(--muted); font-size: 27rpx; }
+.booking-close { position: absolute; top: 16rpx; right: 24rpx; z-index: 1; display: flex; align-items: center; justify-content: center; width: 86rpx; min-width: 44px; height: 86rpx; min-height: 44px; margin: 0; padding: 0; border-radius: 18rpx; background: #f8f1f5; }
+.booking-pickers { display: flex; flex-direction: column; gap: 12rpx; }
+.booking-field { display: flex; align-items: center; gap: 10rpx; min-height: 91rpx; padding: 12rpx 15rpx; border: 1rpx solid #efdee6; border-radius: 13rpx; background: #fbf7f9; }
+.booking-field view { flex: 1; min-width: 0; }
+.field-label, .field-choice { display: block; }
+.field-label { color: var(--muted); font-size: 24rpx; }
+.field-choice { color: var(--ink); font-size: 34rpx; font-weight: 650; }
+.booking-when { display: flex; gap: 12rpx; }
+.booking-when picker { flex: 1 1 0; min-width: 0; }
+.booking-submit { width: 100%; min-height: 88rpx; margin-top: 19rpx; font-size: 34rpx; }
+.motion-off .pickup-card, .motion-off .booking-sheet { animation: none; }
+@keyframes pickup-enter {
+  from { transform: translateY(6rpx); opacity: .72; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@keyframes booking-enter {
+  from { transform: translateY(14rpx); }
+  to { transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) { .pickup-card, .booking-sheet { animation: none; } }

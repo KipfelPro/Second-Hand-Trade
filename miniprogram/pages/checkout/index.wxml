@@ -1,0 +1,34 @@
+<view class="page checkout-page {{reducedMotion ? 'motion-off' : ''}}" wx:if="{{product}}">
+  <view class="checkout-banner">
+    <view class="checkout-mark"><t-icon name="{{paidOrderId ? 'check' : 'shield'}}" size="{{42}}" /></view>
+    <view><view class="banner-title">{{paidOrderId ? '模拟支付成功' : '校园担保交易'}}</view><view class="banner-note">{{paidOrderId ? '款项已模拟托管' : '本次不会实际扣款'}}</view></view>
+  </view>
+
+  <view class="card checkout-card">
+    <view class="checkout-item">
+      <image wx:if="{{product.images.length}}" class="checkout-image" src="{{product.images[0]}}" mode="aspectFill" />
+      <view class="checkout-item-main">
+        <view class="checkout-item-title">{{product.title}}</view>
+        <view class="muted checkout-condition">{{product.condition}}</view>
+        <view class="checkout-item-prices"><text class="checkout-price">¥{{purchasePrice}}</text><text wx:if="{{negotiated}}" class="listing-price">¥{{product.price}}</text><text wx:if="{{negotiated}}" class="tag booking-confirmed">已议价</text></view>
+      </view>
+    </view>
+  </view>
+  <view class="card checkout-card">
+    <view class="pickup-card-heading"><view class="section-title">校园自提</view><text class="tag {{pickup ? 'booking-confirmed' : ''}}">{{pickup ? '已确认' : pickupPending ? '等卖家确认' : pickupCountered ? '卖家建议改期' : pickupExpired ? '预约已过期' : '待预约'}}</text></view>
+    <view class="checkout-row"><text class="muted">地点</text><text user-select>{{pickup ? pickup.location : product.location}}</text></view>
+    <view wx:if="{{pickup}}" class="checkout-row"><text class="muted">已约</text><text>{{pickup.date}} {{pickup.time}}</text></view>
+    <view wx:elif="{{product.time}}" class="checkout-row"><text class="muted">可交接</text><text>{{product.time}}</text></view>
+    <button wx:if="{{available}}" class="pickup-checkout-button" hover-class="tap" bindtap="arrangePickup"><t-icon name="clock" size="{{30}}" /><text>{{pickup || pickupPending || pickupCountered ? '查看预约' : pickupExpired ? '重新预约' : '预约自提'}}</text><t-icon name="chevron-right" size="{{24}}" /></button>
+    <view wx:if="{{!pickup && available}}" class="pickup-checkout-note">也可下单后预约。</view>
+  </view>
+  <view class="card checkout-card rules-card">
+    <view class="section-title">托管规则</view>
+    <view class="rules-copy">验货后确认收货，托管款项才会划给卖家。遇到问题可先申请售后。</view>
+  </view>
+  <view class="checkout-bar">
+    <view class="checkout-total"><view>合计</view><text>¥{{purchasePrice}}</text></view>
+    <button class="primary" hover-class="tap" loading="{{busy}}" disabled="{{(!available && !paidOrderId) || busy}}" bindtap="submit">{{paidOrderId ? '查看订单' : available ? '模拟支付' : '暂不可购买'}}</button>
+  </view>
+</view>
+<view wx:else class="page"><view class="empty">这件闲置暂时无法购买</view></view>
